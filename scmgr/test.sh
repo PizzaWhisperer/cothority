@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-DBG_TEST=3
+DBG_TEST=1
 # Debug-level for app
 DBG_APP=2
-DBG_SRV=4
+# DBG_SRV=2
 
 . $(go env GOPATH)/src/github.com/dedis/onet/app/libtest.sh
 
@@ -11,16 +11,16 @@ main(){
 	startTest
 	buildConode github.com/dedis/cothority/skipchain
 	CFG=$BUILDDIR/scmgr_config
-	# test Restart
-	# test Config
-	# test Create
-	# test Join
-	# test Add
-	# test Index
-	# test Fetch
-	# test Link
-	# test Linklist
-	# test Unlink
+	test Restart
+	test Config
+	test Create
+	test Join
+	test Add
+	test Index
+	test Fetch
+	test Link
+	test Linklist
+	test Unlink
 	test Follow
 	test NewChain
 	test Failure
@@ -65,8 +65,7 @@ testNewChain_any(){
 }
 
 testFollow(){
-	# for t in id search lookup list delete; do
-	for t in lookup list delete; do
+	for t in id search lookup list delete; do
 		setupThree
 		testOut "Starting testFollow_$t"
 		testFollow_$t
@@ -263,7 +262,7 @@ testConfig(){
 	CFG=$OLDCFG
 
 	# $CFG/data cannot be empty
-	testFail find "$CFG/data" -maxdepth 0 -type d -empty
+	testFail [ -d "$CFG/data" ]
 }
 
 runSc(){

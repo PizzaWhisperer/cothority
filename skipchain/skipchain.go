@@ -587,12 +587,18 @@ func (s *Service) AddFollow(add *AddFollow) (*EmptyReply, error) {
 	case FollowLookup:
 		si := network.NewServerIdentity(cothority.Suite.Point().Null(), network.NewAddress(network.PlainTCP, add.Conode))
 		roster := onet.NewRoster([]*network.ServerIdentity{si})
-		last, err := s.getLastBlock(roster, add.SkipchainID)
-		if err != nil {
-			return nil, errors.New("didn't find skipchain at given address")
-		}
-		if !last.SkipChainID().Equal(add.SkipchainID) {
-			return nil, errors.New("returned block is not correct")
+		var last *SkipBlock
+		lastID := append([]byte{}, add.SkipchainID...)
+		for {
+			var err error
+			last, err = NewClient().GetSingleBlock(roster, lastID)
+			if err != nil {
+				return nil, errors.New("couldn't update blocks:" + err.Error())
+			}
+			if len(last.ForwardLink) == 0 {
+				break
+			}
+			lastID = last.ForwardLink[len(last.ForwardLink)-1].To
 		}
 		s.Storage.Follow = append(s.Storage.Follow,
 			FollowChainType{
