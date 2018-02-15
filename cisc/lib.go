@@ -208,17 +208,23 @@ func (cfg *ciscConfig) showKeys(id *identity.Identity) {
 	}
 }
 
-func (cfg *ciscConfig) findSC(idHex string) *identity.Identity {
+func (cfg *ciscConfig) findSC(idHex string) (*identity.Identity, error) {
 	id, err := hex.DecodeString(idHex)
 	if err != nil {
-		return nil
+		return nil, errors.New("hex-decoding error: " + err.Error())
 	}
 	for _, i := range cfg.Identities {
 		if i.ID.FuzzyEqual(id) {
-			return i
+			if err := i.DataUpdate(); err != nil {
+				return nil, err
+			}
+			if err := i.ProposeUpdate(); err != nil {
+				return nil, err
+			}
+			return i, nil
 		}
 	}
-	return nil
+	return nil, nil
 }
 
 // Returns the config-file from the configuration
