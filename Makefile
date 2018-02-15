@@ -15,3 +15,11 @@ test_playground:
 
 # Other targets are:
 # make create_stable
+
+protos = status/service/struct.go
+
+proto: $(protos)
+	for p in $(protos); do \
+	  awk -f proto.awk $$p > external/proto/$$(basename $$p .go ).proto; \
+	done
+

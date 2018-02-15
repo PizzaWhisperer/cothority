@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+option java_package = "ch.epfl.dedis.proto";
+option java_outer_classname = "StatusProto";
+
+// ***
+// These are the messages used in the API-calls
+// ***
+
+// Request is what the Status service is expected to receive from clients.
+message Request {
+  required   = 1;
+  //  Response is what the Status service will reply to clients.
+  required Response type = 2;
+  required Status status = 3;
+  optional ServerIdentity serveridentity = 4;
+}

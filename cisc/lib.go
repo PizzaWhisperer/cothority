@@ -74,6 +74,9 @@ func loadConfig(c *cli.Context) (cfg *ciscConfig, loaded bool) {
 	if !loaded {
 		log.Fatal("Wrong message-type in config-file")
 	}
+	if len(cfg.KeyPairs) == 0 {
+		cfg.KeyPairs = map[string]*key.Pair{}
+	}
 	return
 }
 
@@ -84,10 +87,6 @@ func loadConfigOrFail(c *cli.Context) *ciscConfig {
 	cfg, loaded := loadConfig(c)
 	if !loaded {
 		log.Fatal("Couldn't load configuration-file")
-	}
-	for _, id := range cfg.Identities {
-		log.ErrFatal(id.DataUpdate())
-		log.ErrFatal(id.ProposeUpdate())
 	}
 	return cfg
 }
@@ -100,6 +99,19 @@ func loadConfigAdminOrFail(c *cli.Context) *ciscConfig {
 		log.Fatal("Couldn't load configuration-file")
 	}
 	return cfg
+}
+
+// update gets new data for all identities
+func (cfg *ciscConfig) update() error {
+	for _, id := range cfg.Identities {
+		if err := id.DataUpdate(); err != nil {
+			return err
+		}
+		if err := id.ProposeUpdate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Saves the clientApp in the configfile - refuses to save an empty file.

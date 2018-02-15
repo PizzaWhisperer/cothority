@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-DBG_TEST=1
+DBG_TEST=3
 # Debug-level for app
 DBG_APP=2
-# DBG_SRV=2
+DBG_SRV=3
 
 . $(go env GOPATH)/src/github.com/dedis/onet/app/libtest.sh
 
@@ -11,16 +11,16 @@ main(){
 	startTest
 	buildConode github.com/dedis/cothority/skipchain
 	CFG=$BUILDDIR/scmgr_config
-	test Restart
-	test Config
-	test Create
-	test Join
-	test Add
-	test Index
-	test Fetch
-	test Link
-	test Linklist
-	test Unlink
+	# test Restart
+	# test Config
+	# test Create
+	# test Join
+	# test Add
+	# test Index
+	# test Fetch
+	# test Link
+	# test Linklist
+	# test Unlink
 	test Follow
 	test NewChain
 	test Failure
