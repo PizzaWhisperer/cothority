@@ -585,7 +585,7 @@ func (s *Service) AddFollow(add *AddFollow) (*EmptyReply, error) {
 		}
 		log.Lvlf2("%s FollowSearch %s %x", s.ServerIdentity(), add.Conode, add.SkipchainID)
 	case FollowLookup:
-		si := network.NewServerIdentity(cothority.Suite.Point().Null(), network.NewAddress(network.TLS, add.Conode))
+		si := network.NewServerIdentity(cothority.Suite.Point().Null(), network.NewAddress(network.PlainTCP, add.Conode))
 		roster := onet.NewRoster([]*network.ServerIdentity{si})
 		last, err := s.getLastBlock(roster, add.SkipchainID)
 		if err != nil {

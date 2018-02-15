@@ -3,7 +3,7 @@
 DBG_TEST=3
 # Debug-level for app
 DBG_APP=2
-DBG_SRV=3
+DBG_SRV=4
 
 . $(go env GOPATH)/src/github.com/dedis/onet/app/libtest.sh
 
@@ -65,7 +65,8 @@ testNewChain_any(){
 }
 
 testFollow(){
-	for t in id search lookup list delete; do
+	# for t in id search lookup list delete; do
+	for t in lookup list delete; do
 		setupThree
 		testOut "Starting testFollow_$t"
 		testFollow_$t
