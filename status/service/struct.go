@@ -15,7 +15,8 @@ import (
 // ***
 
 // Request is what the Status service is expected to receive from clients.
-type Request struct{}
+type Request struct {
+}
 
 // Response is what the Status service will reply to clients.
 type Response struct {
