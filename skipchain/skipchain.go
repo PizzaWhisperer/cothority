@@ -531,7 +531,9 @@ func (s *Service) Listlink(list *Listlink) (*ListlinkReply, error) {
 func (s *Service) AddFollow(add *AddFollow) (*EmptyReply, error) {
 	msg := []byte{byte(add.Follow)}
 	msg = append(add.SkipchainID, msg...)
-	msg = append(msg, []byte(add.Conode)...)
+	if add.Conode != nil {
+		msg = append(msg, add.Conode.ID[:]...)
+	}
 	if !s.verifySigs(msg, add.Signature) {
 		return &EmptyReply{}, errors.New("wrong signature of unknown signer")
 	}
@@ -585,20 +587,10 @@ func (s *Service) AddFollow(add *AddFollow) (*EmptyReply, error) {
 		}
 		log.Lvlf2("%s FollowSearch %s %x", s.ServerIdentity(), add.Conode, add.SkipchainID)
 	case FollowLookup:
-		si := network.NewServerIdentity(cothority.Suite.Point().Null(), network.NewAddress(network.PlainTCP, add.Conode))
-		roster := onet.NewRoster([]*network.ServerIdentity{si})
-		var last *SkipBlock
-		lastID := append([]byte{}, add.SkipchainID...)
-		for {
-			var err error
-			last, err = NewClient().GetSingleBlock(roster, lastID)
-			if err != nil {
-				return nil, errors.New("couldn't update blocks:" + err.Error())
-			}
-			if len(last.ForwardLink) == 0 {
-				break
-			}
-			lastID = last.ForwardLink[len(last.ForwardLink)-1].To
+		roster := onet.NewRoster([]*network.ServerIdentity{add.Conode})
+		last, err := s.getLastBlock(roster, add.SkipchainID)
+		if err != nil {
+			return nil, errors.New("couldn't lookup skipchain: " + err.Error())
 		}
 		s.Storage.Follow = append(s.Storage.Follow,
 			FollowChainType{
