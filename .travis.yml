@@ -4,6 +4,9 @@ node_js:
   - "lts/*"
   - "8"
 
+go:
+  - 1.9.x
+
 env:
   - TEST_DIR=cothority
   - TEST_DIR=kyber
@@ -31,8 +34,6 @@ notifications:
 matrix:
   include:
     - language: go
-      go:
-        - 1.9
 
       install:
         - go get -t ./...
