@@ -385,6 +385,13 @@ func (s *Service) getBlocks(roster *onet.Roster, id SkipBlockID, n int) ([]*Skip
 // getLastBlock talks one of the servers in roster in order to find the latest
 // block that it knows about.
 func (s *Service) getLastBlock(roster *onet.Roster, latest SkipBlockID) (*SkipBlock, error) {
+	if _, si := roster.Search(s.ServerIdentity().ID); si != nil {
+		sb := s.GetDB().GetByID(latest)
+		if sb == nil {
+			return nil, errors.New("doesn't have skipchain")
+		}
+		return s.GetDB().GetLatest(sb)
+	}
 	// loop on getBlocks, fetching 10 at a time
 	for {
 		blocks, err := s.getBlocks(roster, latest, 10)

@@ -338,7 +338,7 @@ func (c *Client) AddFollow(si *network.ServerIdentity, clientPriv kyber.Scalar,
 	msg = append(scid, msg...)
 
 	if conode != "" {
-		log.Lvl2("Getting public key of conode:", conode)
+		log.Lvl2("Getting public key of conode:", conode, si)
 		lookup := network.NewServerIdentity(cothority.Suite.Point().Null(), network.NewAddress(network.PlainTCP, conode))
 		resp, err := status.NewClient().Request(lookup)
 		if err != nil {
