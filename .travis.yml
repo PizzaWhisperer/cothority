@@ -16,6 +16,7 @@ before_install:
   - export TRAVIS_BUILD_DIR=$HOME/gopath/src/github.com/dedis/cothority
   - cd $HOME/gopath/src/github.com/dedis/cothority
   - echo $GOPATH
+  - go version
   - cd external/js/
   - go get ./...
 
