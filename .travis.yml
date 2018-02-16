@@ -31,6 +31,8 @@ notifications:
 matrix:
   include:
     - language: go
+      go:
+        - 1.9
 
       install:
         - go get -t ./...
