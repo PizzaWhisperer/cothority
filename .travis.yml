@@ -19,11 +19,11 @@ matrix:
   include:
     - language: go
 
-      before_install:
+      install:
         - go version
+        - go get github.com/dedis/Coding || true
         - git clone . $(go env GOPATH)/src/github.com/dedis/cothority
         - go get -t github.com/dedis/cothority/...
-        - go get github.com/dedis/Coding || true
 
       script:
         - cd $(go env GOPATH)/src/github.com/dedis/cothority
