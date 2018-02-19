@@ -1,7 +1,11 @@
 language: node_js
 
+install:
+   - go get github.com/dedis/Coding || true
+   - go get -t github.com/dedis/cothority/...
+
 node_js:
-#  - "lts/*"
+  - "lts/*"
   - "8"
 
 env:
@@ -10,28 +14,12 @@ env:
 
 # Script will be run for each pair of (node_js X env) = 4 times
 script:
-  - cd $TEST_DIR && npm install && npm run test && npm run build
+  - cd external/js/$TEST_DIR && npm install && npm run test && npm run build
+  - env
+  - [ "$TEST_DIR" = "cothority" ] && cd ../../.. && make test 
   
 after_success:
   - npm run coveralls
-
-# And the job specified in matrix/include will be run once also:
-matrix:
-  include:
-    - language: go
-
-      install:
-        - eval "gimme 1.9"
-        - go get github.com/dedis/Coding || true
-        #- git clone . $(go env GOPATH)/src/github.com/dedis/cothority
-        - go get -t github.com/dedis/cothority/...
-
-      script:
-        - cd $(go env GOPATH)/src/github.com/dedis/cothority
-        - make test
-
-      notifications:
-        email: false
 
 notifications:
   email: false
