@@ -1,8 +1,8 @@
 language: node_js
 
 node_js:
-  - "lts/*"
-#  - "8"
+#  - "lts/*"
+  - "8"
 
 env:
   - TEST_DIR=cothority
@@ -11,6 +11,7 @@ env:
 # Script will be run for each pair of (node_js X env) = 4 times
 script:
   - cd $TEST_DIR && npm install && npm run test && npm run build
+  
 after_success:
   - npm run coveralls
 
@@ -20,9 +21,9 @@ matrix:
     - language: go
 
       install:
-        - go version
+        - eval "gimme 1.9"
         - go get github.com/dedis/Coding || true
-        - git clone . $(go env GOPATH)/src/github.com/dedis/cothority
+        #- git clone . $(go env GOPATH)/src/github.com/dedis/cothority
         - go get -t github.com/dedis/cothority/...
 
       script:
