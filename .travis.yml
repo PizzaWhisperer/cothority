@@ -11,7 +11,7 @@ env:
   - TEST_DIR=cothority
   - TEST_DIR=kyber
 
-install:
+before_install:
   - go get -t ./...
 
 script: cd external/js/$TEST_DIR && npm install && npm run test && npm run build
