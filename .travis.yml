@@ -2,48 +2,38 @@ language: node_js
 
 node_js:
   - "lts/*"
-  - "8"
-
-go:
-  - 1.9.x
+#  - "8"
 
 env:
   - TEST_DIR=cothority
-  - TEST_DIR=kyber
+#  - TEST_DIR=kyber
 
-before_install:
-  - export GOPATH=$HOME/gopath
-  - export PATH=$HOME/gopath/bin:$PATH
-  - mkdir -p $HOME/gopath/src/github.com/dedis/cothority
-  - rsync -az ${TRAVIS_BUILD_DIR}/ $HOME/gopath/src/github.com/dedis/cothority/
-  - export TRAVIS_BUILD_DIR=$HOME/gopath/src/github.com/dedis/cothority
-  - cd $HOME/gopath/src/github.com/dedis/cothority
-  - echo $GOPATH
-  - go version
-  - cd external/js/
-  - go get ./...
-
-script: cd $TEST_DIR && npm install && npm run test && npm run build
-
+# Script will be run for each pair of (node_js X env) = 4 times
+script:
+  - cd $TEST_DIR && npm install && npm run test && npm run build
 after_success:
   - npm run coveralls
 
-notifications:
-  email: false
-
+# And the job specified in matrix/include will be run once also:
 matrix:
   include:
     - language: go
 
-      install:
-        - go get -t ./...
+      before_install:
+        - go version
+        - git clone . $(go env GOPATH)/src/github.com/dedis/cothority
+        - go get -t github.com/dedis/cothority/...
         - go get github.com/dedis/Coding || true
 
-      before_install:
-        - cd $TRAVIS_BUILD_DIR
-
       script:
+        - cd $(go env GOPATH)/src/github.com/dedis/cothority
         - make test
 
       notifications:
         email: false
+
+notifications:
+  email: false
+
+
+
